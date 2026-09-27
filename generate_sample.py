@@ -103,6 +103,31 @@ def _make_rows(n: int, label: str, scale: float = 1.0) -> pd.DataFrame:
     data["Label"] = label
     return pd.DataFrame(data)
 
+def generate(n_rows: int = 5000, attack_ratio: float = 0.3) -> pd.DataFrame:
+    n_attack = int(n_rows * attack_ratio)
+    n_benign = n_rows - n_attack
+ 
+    frames = [_make_rows(n_benign, "BENIGN")]
+ 
+    # Distribute attack rows across attack types
+    labels = RNG.choice(ATTACK_LABELS, size=n_attack)
+    for label in ATTACK_LABELS:
+        count = int((labels == label).sum())
+        if count > 0:
+            # Attacks have different traffic patterns
+            frames.append(_make_rows(count, label, scale=1.5))
+ 
+    df = pd.concat(frames, ignore_index=True).sample(
+        frac=1, random_state=42
+    ).reset_index(drop=True)
+ 
+    logger.info(
+        "Generated %d rows  (BENIGN=%d, Attack=%d)",
+        len(df), n_benign, n_attack,
+    )
+    return df
+ 
+
 
 
 if __name__ == "__main__":
