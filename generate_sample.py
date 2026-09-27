@@ -92,6 +92,17 @@ ATTACK_LABELS = [
     "Web Attack – Brute Force", "Bot", "Infiltration",
 ]
 
+def _make_rows(n: int, label: str, scale: float = 1.0) -> pd.DataFrame:
+    data = {}
+    for col, (lo, hi) in FEATURE_SPEC.items():
+        if hi == 1:  # binary flag
+            data[col] = RNG.integers(0, 2, size=n).astype(float)
+        else:
+            vals = RNG.uniform(lo * scale, hi * scale, size=n)
+            data[col] = np.clip(vals, lo, hi)
+    data["Label"] = label
+    return pd.DataFrame(data)
+
 
 
 if __name__ == "__main__":
