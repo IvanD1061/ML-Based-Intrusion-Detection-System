@@ -127,6 +127,20 @@ def generate(n_rows: int = 5000, attack_ratio: float = 0.3) -> pd.DataFrame:
     )
     return df
  
+ def main(argv=None):
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s  %(message)s")
+    p = argparse.ArgumentParser(description="Generate synthetic CICIDS2017-like sample")
+    p.add_argument("--out", default="data/cicids2017/sample.csv")
+    p.add_argument("--rows", type=int, default=5000)
+    p.add_argument("--attack-ratio", type=float, default=0.30)
+    args = p.parse_args(argv)
+ 
+    out = Path(args.out)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    df = generate(n_rows=args.rows, attack_ratio=args.attack_ratio)
+    df.to_csv(out, index=False)
+    logger.info("Saved → %s", out)
+ 
 
 
 
