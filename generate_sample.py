@@ -143,6 +143,5 @@ def generate(n_rows: int = 5000, attack_ratio: float = 0.3) -> pd.DataFrame:
  
 
 
-
 if __name__ == "__main__":
     main()
